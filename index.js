@@ -4,6 +4,12 @@ const app = express();
 const bodyParser = require("body-parser");
 const connection = require('./database/database');
 
+const CategoriesController = require('./categories/CategoriesController');
+const ArticlesController = require('./articles/ArticlesController');
+
+const Article = require('./articles/Article');
+const Category = require('./categories/Category');
+
 // Viwe engine
 app.set('view engine', 'ejs'); 
 
@@ -24,6 +30,11 @@ connection
     .catch((error) =>{
         console.log(error);
     });
+
+//Acesso as rotas dos controllers
+app.use('/', CategoriesController);
+
+app.use('/', ArticlesController);
 
 
 app.get('/', (req, res)=>{
