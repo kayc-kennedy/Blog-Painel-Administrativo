@@ -28,6 +28,7 @@
     "gitignore": "^0.6.0",
     "mysql2": "^2.1.0",
     "nodemon": "^2.0.4",
-    "sequelize": "^6.3.4"
+    "sequelize": "^6.3.4",
+    "slugify": "^1.4.5"
   }
 }
