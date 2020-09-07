@@ -1,7 +1,47 @@
-<%- include("partials/header.ejs") %>
+<%- include("partials/header.ejs")%>
+<%- include("partials/homenavbar.ejs")%>
+
 <body>
-    <h1>Meua migo</h1>
-    
+
+    <div class="container">
+        <hr>
+
+        <div class="jumbotron">
+            <h1 class="display-4">Bem vindo!</h1>
+            <p class="lead">Esse é um simples Blog que foi criado com objeto de praticar a criação de servidores em Node js </p>
+            <hr class="my-4">
+            <!-- <p>It uses utility classes for typography and spacing to space content out within the larger container.</p> -->
+            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+          </div>
+        
+        <% articles.forEach(article => { %>
+            <br>
+            <div class="card">
+                <div class = "card-header">
+                    <h2> <%= article.title %></h2>
+                </div>
+
+                <div class= "card-body">
+                    <a href="/<%= article.slug %>" class="btn btn-success">Ler artigo</a>
+                </div>
+
+            </div>
+            
+        <% }) %>            
+
+        <div class='row'>
+            
+            <div class="col col-12">
+                <a style="float:right" href="/articles/page/2"> Next >>></a>
+            </div>
+            <br>
+
+        </div>
+
+        <br>
+
+    </div>
+
 </body>
 
 <%- include("partials/footer.ejs") %>

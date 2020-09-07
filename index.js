@@ -37,8 +37,65 @@ app.use('/', CategoriesController);
 app.use('/', ArticlesController);
 
 
-app.get('/', (req, res)=>{
-    res.render('index');
+app.get('/', (req, res)=>{ // Rota que alimenta a Home (navbar)
+
+    Article.findAll(
+        {order: [['id', 'desc']],
+        limit: 4
+        
+    }).then(articles => {
+
+        Category.findAll().then(categories => {
+            res.render('index', {articles: articles, categories: categories});
+        
+        });
+    });
+});
+
+app.get('/:slug', (req, res) =>{
+    var slug = req.params.slug;
+
+    Article.findOne({
+        where: {
+            slug: slug
+        }
+    }).then( article =>{
+        if(article != undefined){
+            
+           Category.findAll().then(categories => {
+            res.render('article', {article: article, categories: categories});
+        
+        });
+
+        }else{
+            res.redirect('/');
+        }
+    }).catch(err =>{
+        res.redirect('/');
+    });
+
+});
+
+app.get('/category/:slug', (req, res) =>{
+    let slug = req.params.slug;
+
+    Category.findOne({
+        where:{
+            slug: slug
+        },
+        include: [{model: Article}]
+    
+    }).then(category =>{
+        if(category != undefined){
+            Category.findAll().then(categories =>{
+                res.render('index', {articles: category.articles, categories:categories});
+            });
+        }else{
+            res.redirect('/');
+        }
+    }).catch(err =>{
+        res.redirect('/')
+    });
 });
 
 // Definindo a Porta de acesso
