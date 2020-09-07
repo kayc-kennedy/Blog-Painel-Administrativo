@@ -1,8 +1,10 @@
 const sequelize = require("sequelize");
 
-const connection = new sequelize('Perguntas', 'root', '123brochine', {
+// Conexão com o banco
+const connection = new sequelize('guiapress', 'root', '123brochine',{
     host:'localhost',
-    dialect:'mysql'
+    dialect:'mysql',
+    timezone: '-03:00'
 });
 
 module.exports = connection;
