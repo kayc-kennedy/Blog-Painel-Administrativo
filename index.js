@@ -1,104 +1,106 @@
+//Requisições
 const express = require("express");
+const { render } = require("ejs");
 const app = express();
-
 const bodyParser = require("body-parser");
-const connection = require('./database/database');
+const connection = require("./database/database");
+//Executando o arquivo peguntas.js, cria a tabela de perguntas
+const pergunta = require("./database/pergunta")
+const resposta = require("./database/resposta");
 
-const CategoriesController = require('./categories/CategoriesController');
-const ArticlesController = require('./articles/ArticlesController');
-
-const Article = require('./articles/Article');
-const Category = require('./categories/Category');
-
-// Viwe engine
-app.set('view engine', 'ejs'); 
-
-// Statics -- Arquivos estaticos (Sempre usar o nome de pasta = "public")
-app.use(express.static('public'))
-
-// Body Parser
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-
-
-// Database - Conexão com o banco
+//Estabelecendo conexão - Promise 
 connection
     .authenticate()
-    .then(() => {
-        console.log("Conexão realizada com sucesso");
+    .then(()=>{ //Se a conexão tiver sucesso
+        console.log("Conexão homologada com o bando de dados");
     })
-    .catch((error) =>{
+    .catch((error)=>{//Se ocorrer um erro
         console.log(error);
-    });
-
-//Acesso as rotas dos controllers
-app.use('/', CategoriesController);
-
-app.use('/', ArticlesController);
+    })
 
 
-app.get('/', (req, res)=>{ // Rota que alimenta a Home (navbar)
-
-    Article.findAll(
-        {order: [['id', 'desc']],
-        limit: 4
-        
-    }).then(articles => {
-
-        Category.findAll().then(categories => {
-            res.render('index', {articles: articles, categories: categories});
-        
-        });
-    });
+app.listen(3000, () =>{
+    console.log("Server is Running");
 });
 
-app.get('/:slug', (req, res) =>{
-    var slug = req.params.slug;
+//Faz a decodificação dos dados, para que seja possível utiliza-los em JavaScript
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json()); //Possibilita utilizar dados enviador por Json
 
-    Article.findOne({
-        where: {
-            slug: slug
-        }
-    }).then( article =>{
-        if(article != undefined){
-            
-           Category.findAll().then(categories => {
-            res.render('article', {article: article, categories: categories});
-        
+
+//indico o motor de visão EJS para o express
+app.set('view engine', 'ejs');
+
+
+// Indico para o express que usarei arquivos estáticos, como css, html, js, png
+app.use(express.static('public'));
+
+
+//Rotas
+app.get("/", (req, res)=>{
+    //Busca as perguntas no banco
+    pergunta.findAll({ raw: true, order:[['id', 'desc'] //Ordenando os valores || desc = decrecente, asc = crecente  
+        ]}).then(perguntas =>{
+            res.render("index",{
+            pergunta: perguntas 
         });
 
-        }else{
-            res.redirect('/');
-        }
-    }).catch(err =>{
+
+    });
+
+});
+
+app.get("/perguntar", (req, res)=>{
+    res.render("perguntar");
+})
+
+app.post("/salvarpergunta", (req, res)=>{
+    var titulo = req.body.titulo;
+    var descricao = req.body.descricao;
+  
+    pergunta.create({//inserindo dados na tabela
+        titulo: titulo,
+        descricao: descricao
+    }).then(() =>{
         res.redirect('/');
     });
 
-});
+})
 
-app.get('/category/:slug', (req, res) =>{
-    let slug = req.params.slug;
+app.get('/pergunta/:id', (req, res) =>{
+    let id = req.params.id;
 
-    Category.findOne({
-        where:{
-            slug: slug
-        },
-        include: [{model: Article}]
-    
-    }).then(category =>{
-        if(category != undefined){
-            Category.findAll().then(categories =>{
-                res.render('index', {articles: category.articles, categories:categories});
-            });
+    pergunta.findOne({ //Buscando um Id na tabela "perguntas"
+        where: {id: id}
+    }).then(pergunta =>{// Se achar o ID, esse bloco será executado
+        if(pergunta != undefined){
+            
+            resposta.findAll({ // Buscando as respostas de cada pergunta e ordenando
+                where: {perguntaId: pergunta.id}, 
+                order: [
+                    ['id', 'desc']
+                ]
+
+            }).then(respostas => {
+                    res.render('pergunta',{//Pego as perguntas de cada resposta e apresento as duas juntas na pagina principal
+                        pergunta:pergunta,
+                        respostas: respostas
+                    });
+                });
         }else{
-            res.redirect('/');
+            res.redirect("/")
         }
-    }).catch(err =>{
-        res.redirect('/')
-    });
+    })
 });
 
-// Definindo a Porta de acesso
-app.listen(8000, () => {
-    console.log("Server is running");
+app.post('/responder', (req, res) =>{
+    let corpo = req.body.corpo;
+    let perguntaId = req.body.pergunta;
+
+    resposta.create({// Inserindo dados na tabela respostas
+        corpo: corpo,
+        perguntaId:perguntaId
+    }).then( () =>{
+        res.redirect('/pergunta/' + perguntaId);
+    }); 
 });

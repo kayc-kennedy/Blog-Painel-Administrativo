@@ -1,7 +1,7 @@
 {
-  "name": "blog",
+  "name": "perguntaresposta",
   "version": "1.0.0",
-  "description": "Blog + Painel administrativo",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
@@ -9,17 +9,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kayc-kennedy/Blog-Painel-Administrativo.git"
+    "url": "git+https://github.com/kayc-kennedy/Perguntas-e-Respostas.git"
   },
   "keywords": [
-    "kayc-kennedy"
+    "123brochine"
   ],
-  "author": "Kayc Kennedy",
+  "author": "KaycKennedy",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kayc-kennedy/Blog-Painel-Administrativo/issues"
+    "url": "https://gitlab.com/portifolio2/projectsnode/perguntas-e-respostas/issues"
   },
-  "homepage": "https://github.com/kayc-kennedy/Blog-Painel-Administrativo#readme",
+  "homepage": "https://gitlab.com/portifolio2/projectsnode/perguntas-e-respostas#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
@@ -28,7 +28,6 @@
     "gitignore": "^0.6.0",
     "mysql2": "^2.1.0",
     "nodemon": "^2.0.4",
-    "sequelize": "^6.3.4",
-    "slugify": "^1.4.5"
+    "sequelize": "^6.3.3"
   }
 }
