@@ -2,17 +2,17 @@ const sequelize = require('sequelize');
 const connection = require('../database/database');
 
 // Criando tabela de categorias 
-const Category = connection.define('categories', {
-    title: {
+const User = connection.define('users', {
+    email: {
         type: sequelize.STRING,
         allowNull: false
     },
-    slug:{
+    password:{
         type: sequelize.STRING,
         allowNull: false
     }
 })
 
-//usuario.sync({force: true});
+//User.sync({force: false});
 
-module.exports = Category;
+module.exports = User;

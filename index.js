@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require('express-session');
 const app = express();
 
 const bodyParser = require("body-parser");
@@ -6,12 +7,22 @@ const connection = require('./database/database');
 
 const CategoriesController = require('./categories/CategoriesController');
 const ArticlesController = require('./articles/ArticlesController');
+const usersController = require('./users/usersController');
 
 const Article = require('./articles/Article');
 const Category = require('./categories/Category');
+const User = require('./users/user');
+
 
 // Viwe engine
 app.set('view engine', 'ejs'); 
+
+// sessions 
+app.use(session({
+    secret: "seila",
+    cookie: {maxAge: 30000000000000}
+}));
+
 
 // Statics -- Arquivos estaticos (Sempre usar o nome de pasta = "public")
 app.use(express.static('public'))
@@ -35,6 +46,10 @@ connection
 app.use('/', CategoriesController);
 
 app.use('/', ArticlesController);
+
+app.use('/', usersController);
+
+
 
 
 app.get('/', (req, res)=>{ // Rota que alimenta a Home (navbar)
