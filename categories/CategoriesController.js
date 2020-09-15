@@ -3,7 +3,9 @@ const router = express.Router();
 const Category = require('./Category');
 const slugify = require('slugify'); // Transforma string em URL
 
-router.get('/admin/categories/new', (req, res) =>{
+const adminAuth = require("../middlewares/adminAuth");
+
+router.get('/admin/categories/new',  (req, res) =>{
     res.render('admin/categories/new');
 })
 

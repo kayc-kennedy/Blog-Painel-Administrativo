@@ -5,7 +5,12 @@ const category = require('../categories/Category');
 const article  = require('./Article');
 const slugify = require('slugify');
 
-router.get('/admin/articles', (req, res) =>{
+
+// Middleware
+const adminAuth = require("../middlewares/adminAuth");
+
+
+router.get('/admin/articles', adminAuth, (req, res) =>{
     article.findAll(
         // Faz relação entre as tabelas de categoria e artigo, o join
         {include:[{model: category}]},
@@ -16,7 +21,7 @@ router.get('/admin/articles', (req, res) =>{
 
 });
 
-router.get('/admin/articles/new', (req, res) => {
+router.get('/admin/articles/new', adminAuth, (req, res) => {
     
     category.findAll().then(categories => {
         res.render('admin/articles/new', {category: categories});    
@@ -66,7 +71,7 @@ router.post('/articles/delete', (req, res) => {
 
 })
 
-router.get('/admin/articles/edit/:id', (req, res) =>{
+router.get('/admin/articles/edit/:id', adminAuth, (req, res) =>{
     var id = req.params.id;
     
     article.findByPk(id).then(article =>{
@@ -102,7 +107,7 @@ router.post('/articles/update', (req, res) =>{
 
 });
 
-router.get('/articles/page/:num', (req, res) =>{
+router.get('/articles/page/:num',  (req, res) =>{
     var page = req.params.num;
     var offset = 0;
 

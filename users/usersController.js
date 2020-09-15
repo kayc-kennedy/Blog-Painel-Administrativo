@@ -4,6 +4,8 @@ const user = require('./user');
 const bcrypt = require('bcryptjs');
 const User = require('./user');
 
+
+
 router.get('/admin/users', (req, res) => {
     User.findAll().then(users =>{
         
@@ -58,11 +60,11 @@ router.post('/authenticate', (req, res)=>{
             
             if(correct){
                 // Se o usuario logar no sistema, crio uma sessão
-                req.session.user = {
+                req.session.admin = {
                     id: user.id,
                     email: user.email
                 }
-                res.json(req.session.user);
+                res.redirect('/admin/articles');
                 
             }else{
                 res.redirect('/login');
@@ -72,6 +74,12 @@ router.post('/authenticate', (req, res)=>{
         }
     });
 
-})
+});
+
+router.get('/logout', (res, req) => {
+    req.session.admin = undefined;
+    res.redirect('/');
+
+});
 
 module.exports = router;
