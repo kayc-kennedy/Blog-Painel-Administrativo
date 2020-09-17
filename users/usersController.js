@@ -45,6 +45,7 @@ router.post('/users/create', (req, res) =>{
 
 });
 
+
 router.get('/login', (req, res)=>{
     res.render('admin/users/login');
 });
@@ -64,6 +65,10 @@ router.post('/authenticate', (req, res)=>{
                     id: user.id,
                     email: user.email
                 }
+
+                console.log(req.session.admin);
+                console.log(req.session);
+
                 res.redirect('/admin/articles');
                 
             }else{
@@ -76,10 +81,11 @@ router.post('/authenticate', (req, res)=>{
 
 });
 
-router.get('/logout', (res, req) => {
-    req.session.admin = undefined;
-    res.redirect('/');
 
+router.get('/logout', (req, res)=>{
+    req.session = null;
+    res.redirect('/');
 });
+
 
 module.exports = router;
